@@ -196,8 +196,45 @@ function Index() {
       {/* HERO */}
       <section className="hero-bg relative overflow-hidden">
         <div className="absolute inset-0 grid-lines opacity-40" aria-hidden />
+        {/* Aurora blobs */}
+        <div
+          className="aurora"
+          aria-hidden
+          style={{
+            width: 520,
+            height: 520,
+            top: -120,
+            left: -80,
+            background: "oklch(0.9 0.19 122 / 0.55)",
+          }}
+        />
+        <div
+          className="aurora"
+          aria-hidden
+          style={{
+            width: 620,
+            height: 620,
+            top: 40,
+            right: -160,
+            background: "oklch(0.65 0.2 300 / 0.45)",
+            animationDelay: "-6s",
+          }}
+        />
+        <div
+          className="aurora"
+          aria-hidden
+          style={{
+            width: 480,
+            height: 480,
+            bottom: -180,
+            left: "35%",
+            background: "oklch(0.75 0.16 200 / 0.4)",
+            animationDelay: "-12s",
+          }}
+        />
+
         <div className="relative mx-auto max-w-7xl px-6 pt-24 pb-32 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary">
+          <div className="reveal-up inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
@@ -205,39 +242,47 @@ function Index() {
             AI-powered · Instant results
           </div>
 
-          <h1 className="mt-8 font-display text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.95]">
-            <span className="text-gradient">Beat the bots.</span>
+          <h1 className="reveal-up-d1 mt-8 font-display text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.95]">
+            <span className="shimmer-text">Beat the bots.</span>
             <br />
             <span className="text-foreground">Land the </span>
             <span className="relative inline-block">
-              <span className="relative z-10 text-primary italic font-normal">interview.</span>
+              <span className="relative z-10 gradient-pan italic font-normal">interview.</span>
               <svg
-                className="absolute -bottom-2 left-0 h-3 w-full text-primary/40"
+                className="absolute -bottom-2 left-0 h-3 w-full text-primary/60"
                 viewBox="0 0 200 12"
                 preserveAspectRatio="none"
               >
-                <path d="M2 8 Q 50 2, 100 6 T 198 4" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
+                <path
+                  d="M2 8 Q 50 2, 100 6 T 198 4"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  fill="none"
+                  strokeLinecap="round"
+                  className="signature-draw"
+                />
               </svg>
             </span>
           </h1>
 
-          <p className="mx-auto mt-8 max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
+          <p className="reveal-up-d2 mx-auto mt-8 max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
             Drop your resume. Get an instant ATS score, missing keywords, skill gaps, and rewrite
             suggestions — powered by AI that thinks like a recruiter.
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-            <Button size="lg" onClick={scrollToAnalyzer} className="rounded-full h-12 px-7 lime-glow text-base">
-              <Sparkles className="mr-2 h-4 w-4" /> Analyze my resume
+          <div className="reveal-up-d3 mt-10 flex flex-wrap items-center justify-center gap-3">
+            <Button size="lg" onClick={scrollToAnalyzer} className="rounded-full h-12 px-7 glow-pulse text-base group">
+              <Sparkles className="mr-2 h-4 w-4 transition-transform group-hover:rotate-12" /> Analyze my resume
+              <ArrowRight className="ml-2 h-4 w-4 bounce-arrow" />
             </Button>
             <Link to="/builder">
-              <Button size="lg" variant="secondary" className="rounded-full h-12 px-7 text-base bg-secondary/50 border border-border">
+              <Button size="lg" variant="secondary" className="rounded-full h-12 px-7 text-base bg-secondary/50 border border-border hover:border-primary/50 transition">
                 <Wand2 className="mr-2 h-4 w-4" /> Build with AI
               </Button>
             </Link>
           </div>
 
-          <div className="mt-16 flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs uppercase tracking-widest text-muted-foreground/60">
+          <div className="reveal-up-d3 mt-16 flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs uppercase tracking-widest text-muted-foreground/60">
             <span>PDF & DOCX</span>
             <span className="text-primary/60">✦</span>
             <span>Zero storage</span>
@@ -248,10 +293,12 @@ function Index() {
           </div>
         </div>
 
+
         {/* Floating preview mockup */}
         <div className="relative mx-auto max-w-5xl px-6 pb-12 -mt-8">
-          <div className="animate-float elevated-card rounded-3xl p-1.5">
+          <div className="animate-float tilt-hover elevated-card rounded-3xl p-1.5">
             <div className="rounded-[22px] bg-background/60 backdrop-blur p-8 md:p-10">
+
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <div className="flex gap-1.5">
@@ -503,17 +550,58 @@ function Index() {
         </div>
       </section>
 
-      <footer className="border-t border-border/60 py-10">
-        <div className="mx-auto max-w-7xl px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+      <footer className="relative border-t border-border/60 py-12 overflow-hidden">
+        <div
+          className="aurora"
+          aria-hidden
+          style={{
+            width: 500,
+            height: 300,
+            bottom: -160,
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: "oklch(0.9 0.19 122 / 0.25)",
+          }}
+        />
+        <div className="relative mx-auto max-w-7xl px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <span className="grid h-6 w-6 place-items-center rounded-md bg-primary text-primary-foreground text-xs font-bold">R</span>
             <span>ResumeIQ · analyzed securely, never stored.</span>
           </div>
+
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60">
+              Crafted by
+            </span>
+            <a
+              href="#"
+              className="group inline-flex items-center gap-2 font-display text-lg"
+            >
+              <span className="gradient-pan font-semibold tracking-tight">Ayush.K</span>
+              <svg
+                width="60"
+                height="14"
+                viewBox="0 0 60 14"
+                className="text-primary/70"
+                fill="none"
+              >
+                <path
+                  d="M2 10 Q 15 2, 30 8 T 58 6"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  className="signature-draw"
+                />
+              </svg>
+            </a>
+          </div>
+
           <div className="font-mono text-xs text-muted-foreground/60">
             © {new Date().getFullYear()} — built for job seekers
           </div>
         </div>
       </footer>
+
     </div>
   );
 }

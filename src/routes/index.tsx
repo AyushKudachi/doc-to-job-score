@@ -98,26 +98,10 @@ function Index() {
       const result = await analyze({ data: { resumeText } });
       setAnalysis(result);
       toast.success("Analysis complete");
-      // Auto-save to history when signed in
-      if (userEmail) {
-        try {
-          await save({
-            data: {
-              fileName: file?.name ?? "resume",
-              atsScore: result.atsScore,
-              summary: result.summary,
-              analysis: result as unknown as Record<string, unknown>,
-            },
-          });
-          toast.success("Saved to your history");
-        } catch (err) {
-          console.error("save failed", err);
-          toast.error("Couldn't save to history");
-        }
-      }
       setTimeout(() => {
         document.getElementById("results")?.scrollIntoView({ behavior: "smooth" });
       }, 100);
+
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Analysis failed");
     } finally {

@@ -178,7 +178,7 @@ function ComparePage() {
           <UploadSlot slot="B" state={b} onFile={handleFile} />
         </div>
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex flex-col items-center gap-4">
           <Button
             size="lg"
             onClick={runCompare}
@@ -195,6 +195,13 @@ function ComparePage() {
               </>
             )}
           </Button>
+
+          {(a.analyzing || b.analyzing || a.analysis || b.analysis || a.error || b.error) && (
+            <div className="w-full max-w-2xl grid gap-3 sm:grid-cols-2">
+              <SlotStatus slot="A" state={a} onRetry={() => retry("A")} />
+              <SlotStatus slot="B" state={b} onRetry={() => retry("B")} />
+            </div>
+          )}
         </div>
 
         {a.analysis && b.analysis && (
@@ -205,6 +212,7 @@ function ComparePage() {
             <DiffLists a={a.analysis} b={b.analysis} />
           </div>
         )}
+
       </section>
     </div>
   );

@@ -61,6 +61,21 @@ function Index() {
   const [dragActive, setDragActive] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const analyze = useServerFn(analyzeResume);
+  const save = useServerFn(saveAnalysis);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUserEmail(data.user?.email ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUserEmail(session?.user?.email ?? null);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+  };
 
   const handleFile = useCallback(async (f: File) => {
     setFile(f);

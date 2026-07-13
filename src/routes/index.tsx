@@ -133,6 +133,7 @@ function Index() {
             <Link to="/how-it-works" className="hover:text-foreground transition">How it works</Link>
           </nav>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button size="sm" onClick={scrollToAnalyzer} className="rounded-full">
               Analyze <ArrowRight className="ml-1 h-4 w-4" />
             </Button>

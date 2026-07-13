@@ -14,7 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      resume_analyses: {
+        Row: {
+          analysis: Json
+          ats_score: number
+          created_at: string
+          file_name: string
+          id: string
+          summary: string | null
+          user_id: string
+        }
+        Insert: {
+          analysis: Json
+          ats_score: number
+          created_at?: string
+          file_name: string
+          id?: string
+          summary?: string | null
+          user_id: string
+        }
+        Update: {
+          analysis?: Json
+          ats_score?: number
+          created_at?: string
+          file_name?: string
+          id?: string
+          summary?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

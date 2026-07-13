@@ -550,17 +550,58 @@ function Index() {
         </div>
       </section>
 
-      <footer className="border-t border-border/60 py-10">
-        <div className="mx-auto max-w-7xl px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+      <footer className="relative border-t border-border/60 py-12 overflow-hidden">
+        <div
+          className="aurora"
+          aria-hidden
+          style={{
+            width: 500,
+            height: 300,
+            bottom: -160,
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: "oklch(0.9 0.19 122 / 0.25)",
+          }}
+        />
+        <div className="relative mx-auto max-w-7xl px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <span className="grid h-6 w-6 place-items-center rounded-md bg-primary text-primary-foreground text-xs font-bold">R</span>
             <span>ResumeIQ · analyzed securely, never stored.</span>
           </div>
+
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60">
+              Crafted by
+            </span>
+            <a
+              href="#"
+              className="group inline-flex items-center gap-2 font-display text-lg"
+            >
+              <span className="gradient-pan font-semibold tracking-tight">Ayush.K</span>
+              <svg
+                width="60"
+                height="14"
+                viewBox="0 0 60 14"
+                className="text-primary/70"
+                fill="none"
+              >
+                <path
+                  d="M2 10 Q 15 2, 30 8 T 58 6"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  className="signature-draw"
+                />
+              </svg>
+            </a>
+          </div>
+
           <div className="font-mono text-xs text-muted-foreground/60">
             © {new Date().getFullYear()} — built for job seekers
           </div>
         </div>
       </footer>
+
     </div>
   );
 }

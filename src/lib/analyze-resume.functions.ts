@@ -78,14 +78,40 @@ export const analyzeResume = createServerFn({ method: "POST" })
     };
     const content = json.choices?.[0]?.message?.content ?? "";
 
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(content);
-    } catch {
-      const match = content.match(/\{[\s\S]*\}/);
-      if (!match) throw new Error("AI returned malformed response");
-      parsed = JSON.parse(match[0]);
-    }
-
+    const parsed = extractJson(content);
     return AnalysisSchema.parse(parsed);
   });
+
+function extractJson(raw: string): unknown {
+  const cleaned = raw
+    .replace(/^\s*```(?:json)?\s*/i, "")
+    .replace(/\s*```\s*$/i, "")
+    .trim();
+
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    const start = cleaned.indexOf("{");
+    if (start === -1) throw new Error("AI returned malformed response");
+    let depth = 0;
+    let inStr = false;
+    let esc = false;
+    for (let i = start; i < cleaned.length; i++) {
+      const ch = cleaned[i];
+      if (inStr) {
+        if (esc) esc = false;
+        else if (ch === "\\") esc = true;
+        else if (ch === '"') inStr = false;
+        continue;
+      }
+      if (ch === '"') inStr = true;
+      else if (ch === "{") depth++;
+      else if (ch === "}") {
+        depth--;
+        if (depth === 0) return JSON.parse(cleaned.slice(start, i + 1));
+      }
+    }
+    throw new Error("AI returned malformed response");
+  }
+}
+

@@ -276,7 +276,7 @@ function Index() {
             </h2>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="mx-auto max-w-xl">
             <div className="elevated-card rounded-2xl p-6">
               <label className="text-xs uppercase tracking-widest text-muted-foreground font-medium flex items-center gap-2 mb-4">
                 <FileText className="h-3.5 w-3.5" /> Resume file
@@ -332,21 +332,6 @@ function Index() {
                   </div>
                 )}
               </div>
-            </div>
-
-            <div className="elevated-card rounded-2xl p-6">
-              <label className="text-xs uppercase tracking-widest text-muted-foreground font-medium flex items-center gap-2 mb-4">
-                <Target className="h-3.5 w-3.5" /> Job description
-                <span className="text-[10px] normal-case tracking-normal text-muted-foreground/60">
-                  optional but recommended
-                </span>
-              </label>
-              <Textarea
-                value={jobDescription}
-                onChange={(e) => setJobDescription(e.target.value)}
-                placeholder="Paste the job description here to tailor the analysis…"
-                className="min-h-[220px] resize-none bg-background/50 border-border font-mono text-sm"
-              />
             </div>
           </div>
 

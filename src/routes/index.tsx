@@ -14,6 +14,7 @@ import {
   Zap,
   ScanLine,
   FileCheck2,
+  Wand2,
 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";

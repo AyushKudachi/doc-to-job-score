@@ -179,9 +179,9 @@ function Index() {
             <Button size="lg" onClick={scrollToAnalyzer} className="rounded-full h-12 px-7 lime-glow text-base">
               <Sparkles className="mr-2 h-4 w-4" /> Analyze my resume
             </Button>
-            <Link to="/how-it-works">
+            <Link to="/builder">
               <Button size="lg" variant="secondary" className="rounded-full h-12 px-7 text-base bg-secondary/50 border border-border">
-                See how it works
+                <Wand2 className="mr-2 h-4 w-4" /> Build with AI
               </Button>
             </Link>
           </div>

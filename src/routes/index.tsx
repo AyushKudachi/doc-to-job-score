@@ -26,6 +26,7 @@ import { Badge } from "@/components/ui/badge";
 import { extractTextFromFile } from "@/lib/extract-text";
 import { analyzeResume, type ResumeAnalysis } from "@/lib/analyze-resume.functions";
 import { downloadReport } from "@/lib/report";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -132,6 +133,7 @@ function Index() {
             <Link to="/how-it-works" className="hover:text-foreground transition">How it works</Link>
           </nav>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button size="sm" onClick={scrollToAnalyzer} className="rounded-full">
               Analyze <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
@@ -441,16 +443,46 @@ function Index() {
             <div className="grid gap-6 md:grid-cols-2">
               <ListCard
                 title="Strengths"
+                icon={<CheckCircle2 className="h-4 w-4" />}
                 accent="text-primary"
                 items={analysis.strengths}
               />
               <ListCard
-                title="Improvement suggestions"
-                accent="text-primary"
-                icon={<TrendingUp className="h-4 w-4" />}
-                items={analysis.improvements}
+                title="Weaknesses"
+                icon={<XCircle className="h-4 w-4" />}
+                accent="text-destructive"
+                items={analysis.weaknesses.length ? analysis.weaknesses : ["No major weaknesses detected."]}
               />
             </div>
+
+            <ListCard
+              title="Improvement suggestions"
+              icon={<TrendingUp className="h-4 w-4" />}
+              accent="text-primary"
+              items={analysis.improvements}
+            />
+
+            {analysis.actionPoints.length > 0 && (
+              <Card className="elevated-card rounded-2xl p-6 border-l-4 border-l-primary">
+                <h3 className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground mb-4">
+                  <Zap className="h-4 w-4 text-primary" />
+                  Action points — do this week
+                </h3>
+                <ul className="space-y-3">
+                  {analysis.actionPoints.map((it, i) => (
+                    <li
+                      key={i}
+                      className="flex gap-3 text-sm text-foreground/90 rounded-xl bg-secondary/40 p-3 transition-transform hover:translate-x-1"
+                    >
+                      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
+                        {i + 1}
+                      </span>
+                      <span className="leading-relaxed pt-0.5">{it}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            )}
 
             {analysis.detectedSkills.length > 0 && (
               <Card className="elevated-card p-6 rounded-2xl">

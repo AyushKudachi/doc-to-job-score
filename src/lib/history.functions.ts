@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Json } from "@/integrations/supabase/types";
 
 const SaveInput = z.object({
   fileName: z.string().min(1).max(200),
@@ -16,7 +17,7 @@ export type SavedAnalysisRow = {
   file_name: string;
   ats_score: number;
   summary: string | null;
-  analysis: unknown;
+  analysis: Json;
   created_at: string;
 };
 
@@ -32,7 +33,7 @@ export const saveAnalysis = createServerFn({ method: "POST" })
         file_name: data.fileName,
         ats_score: Math.round(data.atsScore),
         summary: data.summary || null,
-        analysis: data.analysis as never,
+        analysis: data.analysis as Json,
       })
       .select("id")
       .single();

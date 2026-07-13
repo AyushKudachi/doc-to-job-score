@@ -130,6 +130,7 @@ function Index() {
           <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
             <a href="#analyzer" className="hover:text-foreground transition">Analyzer</a>
             <Link to="/builder" className="hover:text-foreground transition">AI Builder</Link>
+            <Link to="/compare" className="hover:text-foreground transition">Compare</Link>
             <Link to="/how-it-works" className="hover:text-foreground transition">How it works</Link>
           </nav>
           <div className="flex items-center gap-2">

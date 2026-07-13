@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as CompareRouteImport } from './routes/compare'
 import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -19,6 +20,11 @@ import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticate
 const HowItWorksRoute = HowItWorksRouteImport.update({
   id: '/how-it-works',
   path: '/how-it-works',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompareRoute = CompareRouteImport.update({
+  id: '/compare',
+  path: '/compare',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuilderRoute = BuilderRouteImport.update({
@@ -50,6 +56,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/builder': typeof BuilderRoute
+  '/compare': typeof CompareRoute
   '/how-it-works': typeof HowItWorksRoute
   '/history': typeof AuthenticatedHistoryRoute
 }
@@ -57,6 +64,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/builder': typeof BuilderRoute
+  '/compare': typeof CompareRoute
   '/how-it-works': typeof HowItWorksRoute
   '/history': typeof AuthenticatedHistoryRoute
 }
@@ -66,20 +74,28 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/builder': typeof BuilderRoute
+  '/compare': typeof CompareRoute
   '/how-it-works': typeof HowItWorksRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/builder' | '/how-it-works' | '/history'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/builder'
+    | '/compare'
+    | '/how-it-works'
+    | '/history'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/builder' | '/how-it-works' | '/history'
+  to: '/' | '/auth' | '/builder' | '/compare' | '/how-it-works' | '/history'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/builder'
+    | '/compare'
     | '/how-it-works'
     | '/_authenticated/history'
   fileRoutesById: FileRoutesById
@@ -89,6 +105,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   BuilderRoute: typeof BuilderRoute
+  CompareRoute: typeof CompareRoute
   HowItWorksRoute: typeof HowItWorksRoute
 }
 
@@ -99,6 +116,13 @@ declare module '@tanstack/react-router' {
       path: '/how-it-works'
       fullPath: '/how-it-works'
       preLoaderRoute: typeof HowItWorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compare': {
+      id: '/compare'
+      path: '/compare'
+      fullPath: '/compare'
+      preLoaderRoute: typeof CompareRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/builder': {
@@ -155,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   BuilderRoute: BuilderRoute,
+  CompareRoute: CompareRoute,
   HowItWorksRoute: HowItWorksRoute,
 }
 export const routeTree = rootRouteImport

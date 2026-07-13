@@ -12,6 +12,9 @@ import {
   TrendingDown,
   Minus,
   Trophy,
+  RotateCw,
+  AlertCircle,
+  CheckCircle2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -49,6 +52,7 @@ interface SlotState {
   extracting: boolean;
   analyzing: boolean;
   analysis: ResumeAnalysis | null;
+  error: string | null;
 }
 
 const initialSlot: SlotState = {
@@ -57,6 +61,7 @@ const initialSlot: SlotState = {
   extracting: false,
   analyzing: false,
   analysis: null,
+  error: null,
 };
 
 function ComparePage() {
@@ -69,7 +74,13 @@ function ComparePage() {
 
   const handleFile = useCallback(
     async (slot: Slot, file: File) => {
-      setSlot(slot, (s) => ({ ...s, file, extracting: true, analysis: null }));
+      setSlot(slot, (s) => ({
+        ...s,
+        file,
+        extracting: true,
+        analysis: null,
+        error: null,
+      }));
       try {
         const text = await extractTextFromFile(file);
         setSlot(slot, (s) => ({ ...s, text, extracting: false }));
@@ -81,30 +92,46 @@ function ComparePage() {
     [],
   );
 
+  const runOne = useCallback(
+    async (slot: Slot, text: string) => {
+      setSlot(slot, (s) => ({ ...s, analyzing: true, analysis: null, error: null }));
+      try {
+        const res = await analyze({ data: { resumeText: text } });
+        setSlot(slot, (s) => ({ ...s, analyzing: false, analysis: res }));
+        return true;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Analysis failed";
+        setSlot(slot, (s) => ({ ...s, analyzing: false, error: msg }));
+        return false;
+      }
+    },
+    [analyze],
+  );
+
   const runCompare = async () => {
     if (!a.text || !b.text) {
       toast.error("Please upload both resumes first");
       return;
     }
-    setA((s) => ({ ...s, analyzing: true, analysis: null }));
-    setB((s) => ({ ...s, analyzing: true, analysis: null }));
-    try {
-      const [resA, resB] = await Promise.all([
-        analyze({ data: { resumeText: a.text } }),
-        analyze({ data: { resumeText: b.text } }),
-      ]);
-      setA((s) => ({ ...s, analyzing: false, analysis: resA }));
-      setB((s) => ({ ...s, analyzing: false, analysis: resB }));
+    const [okA, okB] = await Promise.all([runOne("A", a.text), runOne("B", b.text)]);
+    if (okA && okB) {
       toast.success("Comparison ready");
       setTimeout(() => {
         document.getElementById("compare-results")?.scrollIntoView({ behavior: "smooth" });
       }, 100);
-    } catch (err) {
-      setA((s) => ({ ...s, analyzing: false }));
-      setB((s) => ({ ...s, analyzing: false }));
-      toast.error(err instanceof Error ? err.message : "Analysis failed");
+    } else if (okA || okB) {
+      toast.warning("One resume failed — retry the failed side");
+    } else {
+      toast.error("Both analyses failed");
     }
   };
+
+  const retry = (slot: Slot) => {
+    const text = slot === "A" ? a.text : b.text;
+    if (!text) return;
+    void runOne(slot, text);
+  };
+
 
   const busy = a.extracting || b.extracting || a.analyzing || b.analyzing;
   const ready = Boolean(a.text && b.text);
@@ -151,7 +178,7 @@ function ComparePage() {
           <UploadSlot slot="B" state={b} onFile={handleFile} />
         </div>
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex flex-col items-center gap-4">
           <Button
             size="lg"
             onClick={runCompare}
@@ -168,6 +195,13 @@ function ComparePage() {
               </>
             )}
           </Button>
+
+          {(a.analyzing || b.analyzing || a.analysis || b.analysis || a.error || b.error) && (
+            <div className="w-full max-w-2xl grid gap-3 sm:grid-cols-2">
+              <SlotStatus slot="A" state={a} onRetry={() => retry("A")} />
+              <SlotStatus slot="B" state={b} onRetry={() => retry("B")} />
+            </div>
+          )}
         </div>
 
         {a.analysis && b.analysis && (
@@ -178,6 +212,7 @@ function ComparePage() {
             <DiffLists a={a.analysis} b={b.analysis} />
           </div>
         )}
+
       </section>
     </div>
   );
@@ -269,6 +304,73 @@ function UploadSlot({
         )}
       </div>
     </Card>
+  );
+}
+
+function SlotStatus({
+  slot,
+  state,
+  onRetry,
+}: {
+  slot: Slot;
+  state: SlotState;
+  onRetry: () => void;
+}) {
+  let tone = "border-border bg-secondary/40";
+  let icon = <Minus className="h-4 w-4 text-muted-foreground" />;
+  let label = "Waiting";
+  let showProgress = false;
+  let showRetry = false;
+
+  if (state.extracting) {
+    tone = "border-primary/30 bg-primary/5";
+    icon = <Loader2 className="h-4 w-4 animate-spin text-primary" />;
+    label = "Reading file…";
+    showProgress = true;
+  } else if (state.analyzing) {
+    tone = "border-primary/30 bg-primary/5";
+    icon = <Loader2 className="h-4 w-4 animate-spin text-primary" />;
+    label = "Analyzing with AI…";
+    showProgress = true;
+  } else if (state.error) {
+    tone = "border-destructive/40 bg-destructive/5";
+    icon = <AlertCircle className="h-4 w-4 text-destructive" />;
+    label = "Analysis failed";
+    showRetry = true;
+  } else if (state.analysis) {
+    tone = "border-primary/30 bg-primary/5";
+    icon = <CheckCircle2 className="h-4 w-4 text-primary" />;
+    label = `Ready · ATS ${state.analysis.atsScore}`;
+  } else if (state.text) {
+    label = "Ready to analyze";
+    icon = <CheckCircle2 className="h-4 w-4 text-muted-foreground" />;
+  }
+
+  return (
+    <div className={`rounded-2xl border px-4 py-3 transition-colors ${tone}`}>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-background/80 text-primary font-mono text-[11px] font-semibold border border-border">
+            {slot}
+          </span>
+          {icon}
+          <span className="text-sm font-medium truncate">{label}</span>
+        </div>
+        {showRetry && (
+          <Button size="sm" variant="outline" onClick={onRetry} className="rounded-full h-8">
+            <RotateCw className="h-3.5 w-3.5 mr-1" /> Retry
+          </Button>
+        )}
+      </div>
+      {showProgress && (
+        <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-secondary/60">
+          <div className="h-full w-1/3 rounded-full bg-primary animate-[compareProgress_1.2s_ease-in-out_infinite]" />
+        </div>
+      )}
+      {state.error && (
+        <p className="mt-2 text-xs text-destructive/90 line-clamp-2">{state.error}</p>
+      )}
+    </div>
   );
 }
 

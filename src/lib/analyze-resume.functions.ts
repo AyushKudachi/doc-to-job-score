@@ -78,7 +78,8 @@ export const analyzeResume = createServerFn({ method: "POST" })
     };
     const content = json.choices?.[0]?.message?.content ?? "";
 
-    parsed = extractJson(content);
+    const parsed = extractJson(content);
+    return AnalysisSchema.parse(parsed);
   });
 
 function extractJson(raw: string): unknown {
@@ -90,7 +91,6 @@ function extractJson(raw: string): unknown {
   try {
     return JSON.parse(cleaned);
   } catch {
-    // Walk brace-by-brace to find the first balanced JSON object.
     const start = cleaned.indexOf("{");
     if (start === -1) throw new Error("AI returned malformed response");
     let depth = 0;
@@ -115,6 +115,3 @@ function extractJson(raw: string): unknown {
   }
 }
 
-
-    return AnalysisSchema.parse(parsed);
-  });

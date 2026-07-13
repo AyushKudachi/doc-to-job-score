@@ -648,6 +648,139 @@ function ScoreBar({ label, value }: { label: string; value: number }) {
   );
 }
 
+function toneFor(value: number) {
+  if (value >= 80) return { text: "text-primary", stroke: "stroke-primary", bg: "bg-primary", label: "Strong" };
+  if (value >= 60) return { text: "text-chart-3", stroke: "stroke-chart-3", bg: "bg-chart-3", label: "Fair" };
+  if (value >= 40) return { text: "text-chart-4", stroke: "stroke-chart-4", bg: "bg-chart-4", label: "Weak" };
+  return { text: "text-destructive", stroke: "stroke-destructive", bg: "bg-destructive", label: "Critical" };
+}
+
+function MiniGauge({ value, label, hint }: { value: number; label: string; hint: string }) {
+  const tone = toneFor(value);
+  const r = 42;
+  const c = 2 * Math.PI * r;
+  const offset = c - (value / 100) * c;
+  return (
+    <div className="group relative rounded-2xl border border-border bg-secondary/40 p-5 transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-elevated)]">
+      <div className="flex items-center gap-4">
+        <div className="relative h-24 w-24 shrink-0">
+          <svg className="h-24 w-24 -rotate-90" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r={r} strokeWidth="8" className="stroke-border" fill="none" />
+            <circle
+              cx="50"
+              cy="50"
+              r={r}
+              strokeWidth="8"
+              fill="none"
+              strokeLinecap="round"
+              className={tone.stroke}
+              strokeDasharray={c}
+              strokeDashoffset={offset}
+              style={{ transition: "stroke-dashoffset 1.1s cubic-bezier(0.22, 1, 0.36, 1)" }}
+            />
+          </svg>
+          <div className="absolute inset-0 grid place-items-center">
+            <span className={`font-display text-2xl font-semibold ${tone.text}`}>{value}</span>
+          </div>
+        </div>
+        <div className="min-w-0">
+          <div className="text-xs uppercase tracking-widest text-muted-foreground">{label}</div>
+          <div className={`mt-1 text-sm font-medium ${tone.text}`}>{tone.label}</div>
+          <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{hint}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BreakdownCard({ analysis }: { analysis: ResumeAnalysis }) {
+  const b = analysis.scoreBreakdown;
+  const missingCount = analysis.missingKeywords.length;
+  const items = [
+    { key: "formatting", value: b.formatting, label: "Formatting", hint: "Structure, headings, and ATS parseability." },
+    { key: "keywords", value: b.keywords, label: "Keywords", hint: "Role-relevant terms recruiters search for." },
+    { key: "experience", value: b.experience, label: "Experience match", hint: "Depth, seniority signals, and impact." },
+    { key: "skills", value: b.skills, label: "Skills coverage", hint: "Breadth and relevance of listed skills." },
+  ];
+
+  const max = Math.max(...items.map((i) => i.value), 1);
+
+  return (
+    <Card className="elevated-card rounded-3xl p-6 md:p-8">
+      <div className="flex flex-wrap items-end justify-between gap-3 mb-6">
+        <div>
+          <h3 className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
+            <Target className="h-4 w-4 text-primary" />
+            ATS score breakdown
+          </h3>
+          <p className="mt-2 text-sm text-muted-foreground max-w-xl">
+            Sub-scores show exactly where the resume passes or trips an ATS. Prioritize the lowest bars first.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 rounded-full border border-border bg-secondary/50 px-3 py-1.5 text-xs">
+          <span className={`h-2 w-2 rounded-full ${missingCount > 0 ? "bg-destructive" : "bg-primary"}`} />
+          <span className="text-muted-foreground">Missing skills</span>
+          <span className="font-mono text-foreground">{missingCount}</span>
+        </div>
+      </div>
+
+      {/* Radial gauges */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {items.map((it) => (
+          <MiniGauge key={it.key} value={it.value} label={it.label} hint={it.hint} />
+        ))}
+      </div>
+
+      {/* Comparative bars */}
+      <div className="mt-8 space-y-4">
+        <div className="text-xs uppercase tracking-widest text-muted-foreground">Comparative view</div>
+        {items.map((it) => {
+          const tone = toneFor(it.value);
+          const relPct = (it.value / max) * 100;
+          return (
+            <div key={it.key} className="grid grid-cols-[110px_1fr_48px] items-center gap-3">
+              <span className="text-xs text-muted-foreground truncate">{it.label}</span>
+              <div className="h-2.5 w-full rounded-full bg-secondary/60 overflow-hidden">
+                <div
+                  className={`h-full rounded-full ${tone.bg} transition-[width] duration-[1200ms] ease-out`}
+                  style={{ width: `${relPct}%` }}
+                />
+              </div>
+              <span className={`text-right font-mono text-sm ${tone.text}`}>{it.value}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Missing skills preview */}
+      {missingCount > 0 && (
+        <div className="mt-8 rounded-2xl border border-destructive/30 bg-destructive/5 p-5">
+          <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-destructive mb-3">
+            <XCircle className="h-4 w-4" />
+            Top missing skills / keywords
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {analysis.missingKeywords.slice(0, 12).map((k) => (
+              <Badge
+                key={k}
+                variant="secondary"
+                className="rounded-full border border-destructive/30 bg-destructive/10 text-destructive px-3 py-1"
+              >
+                {k}
+              </Badge>
+            ))}
+            {missingCount > 12 && (
+              <Badge variant="secondary" className="rounded-full px-3 py-1">
+                +{missingCount - 12} more
+              </Badge>
+            )}
+          </div>
+        </div>
+      )}
+    </Card>
+  );
+}
+
 function KeywordCard({
   title,
   icon,

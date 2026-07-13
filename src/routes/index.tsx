@@ -14,6 +14,7 @@ import {
   Zap,
   ScanLine,
   FileCheck2,
+  Wand2,
 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -125,12 +126,20 @@ function Index() {
           </Link>
           <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
             <a href="#analyzer" className="hover:text-foreground transition">Analyzer</a>
+            <Link to="/builder" className="hover:text-foreground transition">AI Builder</Link>
             <a href="#features" className="hover:text-foreground transition">Features</a>
             <Link to="/how-it-works" className="hover:text-foreground transition">How it works</Link>
           </nav>
-          <Button size="sm" onClick={scrollToAnalyzer} className="rounded-full">
-            Analyze <ArrowRight className="ml-1 h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Link to="/builder" className="hidden sm:block">
+              <Button size="sm" variant="secondary" className="rounded-full">
+                <Sparkles className="mr-1 h-3.5 w-3.5" /> Build
+              </Button>
+            </Link>
+            <Button size="sm" onClick={scrollToAnalyzer} className="rounded-full">
+              Analyze <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -171,9 +180,9 @@ function Index() {
             <Button size="lg" onClick={scrollToAnalyzer} className="rounded-full h-12 px-7 lime-glow text-base">
               <Sparkles className="mr-2 h-4 w-4" /> Analyze my resume
             </Button>
-            <Link to="/how-it-works">
+            <Link to="/builder">
               <Button size="lg" variant="secondary" className="rounded-full h-12 px-7 text-base bg-secondary/50 border border-border">
-                See how it works
+                <Wand2 className="mr-2 h-4 w-4" /> Build with AI
               </Button>
             </Link>
           </div>

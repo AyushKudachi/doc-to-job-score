@@ -39,7 +39,7 @@ const steps = [
     icon: Brain,
     n: "02",
     title: "AI analysis",
-    text: "Our AI compares your resume against ATS best practices and — optionally — the job description you paste, scoring keywords, skills, experience, and formatting.",
+    text: "Our AI compares your resume against ATS best practices and industry expectations, scoring keywords, skills, experience, and formatting.",
   },
   {
     icon: FileDown,
@@ -60,7 +60,7 @@ const faqs = [
   },
   {
     q: "Do I need a job description?",
-    a: "No, but adding one dramatically improves the analysis. With a job description we identify exact keywords and skills the employer is looking for, and flag what's missing.",
+    a: "No. ResumeIQ analyzes your resume for general ATS compatibility and job-market fit, highlighting industry keywords, skills, and formatting issues without requiring a specific job posting.",
   },
   {
     q: "How is the ATS score calculated?",
@@ -68,7 +68,7 @@ const faqs = [
   },
   {
     q: "What does 'missing keywords' mean?",
-    a: "Words or phrases that appear in the job description (or are commonly expected in your industry) but are not present in your resume. Adding them where truthful can significantly boost your match rate.",
+    a: "Words or phrases commonly expected in your industry or role that are not present in your resume. Adding them where truthful can significantly boost your ATS match rate.",
   },
   {
     q: "How do I use the improvement suggestions?",

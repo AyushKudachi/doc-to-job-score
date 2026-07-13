@@ -19,7 +19,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -50,7 +49,6 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [file, setFile] = useState<File | null>(null);
   const [resumeText, setResumeText] = useState("");
-  const [jobDescription, setJobDescription] = useState("");
   const [isExtracting, setIsExtracting] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
@@ -95,7 +93,7 @@ function Index() {
     setIsAnalyzing(true);
     setAnalysis(null);
     try {
-      const result = await analyze({ data: { resumeText, jobDescription } });
+      const result = await analyze({ data: { resumeText } });
       setAnalysis(result);
       toast.success("Analysis complete");
       setTimeout(() => {
@@ -248,8 +246,8 @@ function Index() {
             },
             {
               icon: Target,
-              title: "Match the role",
-              text: "Paste any job description. We compare keywords, skills, and experience with recruiter-level rigor.",
+              title: "Match the market",
+              text: "We compare your resume against industry-standard keywords, skills, and experience expectations with recruiter-level rigor.",
             },
             {
               icon: FileCheck2,
@@ -278,7 +276,7 @@ function Index() {
             </h2>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="mx-auto max-w-xl">
             <div className="elevated-card rounded-2xl p-6">
               <label className="text-xs uppercase tracking-widest text-muted-foreground font-medium flex items-center gap-2 mb-4">
                 <FileText className="h-3.5 w-3.5" /> Resume file
@@ -334,21 +332,6 @@ function Index() {
                   </div>
                 )}
               </div>
-            </div>
-
-            <div className="elevated-card rounded-2xl p-6">
-              <label className="text-xs uppercase tracking-widest text-muted-foreground font-medium flex items-center gap-2 mb-4">
-                <Target className="h-3.5 w-3.5" /> Job description
-                <span className="text-[10px] normal-case tracking-normal text-muted-foreground/60">
-                  optional but recommended
-                </span>
-              </label>
-              <Textarea
-                value={jobDescription}
-                onChange={(e) => setJobDescription(e.target.value)}
-                placeholder="Paste the job description here to tailor the analysis…"
-                className="min-h-[220px] resize-none bg-background/50 border-border font-mono text-sm"
-              />
             </div>
           </div>
 

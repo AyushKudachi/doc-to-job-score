@@ -26,6 +26,7 @@ import { Badge } from "@/components/ui/badge";
 import { extractTextFromFile } from "@/lib/extract-text";
 import { analyzeResume, type ResumeAnalysis } from "@/lib/analyze-resume.functions";
 import { downloadReport } from "@/lib/report";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export const Route = createFileRoute("/")({
   head: () => ({

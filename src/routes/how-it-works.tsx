@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Upload, Brain, FileDown, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Upload, Brain, FileDown, ShieldCheck, ArrowRight } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -31,18 +31,21 @@ export const Route = createFileRoute("/how-it-works")({
 const steps = [
   {
     icon: Upload,
-    title: "1. Upload your resume",
-    text: "Drop a PDF or DOCX. We extract the raw text directly in your browser — nothing is uploaded until you click Analyze.",
+    n: "01",
+    title: "Upload your resume",
+    text: "Drop a PDF or DOCX. We extract raw text directly in your browser — nothing is sent anywhere until you click analyze.",
   },
   {
     icon: Brain,
-    title: "2. AI analysis",
-    text: "Our AI compares your resume against ATS best practices and (optionally) the job description you paste in, scoring keywords, skills, experience, and formatting.",
+    n: "02",
+    title: "AI analysis",
+    text: "Our AI compares your resume against ATS best practices and — optionally — the job description you paste, scoring keywords, skills, experience, and formatting.",
   },
   {
     icon: FileDown,
-    title: "3. Report & improve",
-    text: "You get an ATS score, matched and missing keywords, strengths, and concrete rewrite suggestions — downloadable as a PDF report.",
+    n: "03",
+    title: "Report & improve",
+    text: "You get an ATS score, matched and missing keywords, strengths, and concrete rewrite suggestions — downloadable as a polished PDF report.",
   },
 ];
 
@@ -57,7 +60,7 @@ const faqs = [
   },
   {
     q: "Do I need a job description?",
-    a: "No, but adding one dramatically improves the analysis. With a job description we can identify exact keywords and skills the employer is looking for, and flag what's missing.",
+    a: "No, but adding one dramatically improves the analysis. With a job description we identify exact keywords and skills the employer is looking for, and flag what's missing.",
   },
   {
     q: "How is the ATS score calculated?",
@@ -83,47 +86,72 @@ const faqs = [
 
 function HowItWorks() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30">
-      <header className="border-b border-border/40">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-          <Link to="/" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+          <Link
+            to="/"
+            className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition"
+          >
             <ArrowLeft className="h-4 w-4" /> Back
           </Link>
-          <span className="text-sm font-semibold">ResumeIQ</span>
+          <Link to="/" className="flex items-center gap-2">
+            <span className="grid h-7 w-7 place-items-center rounded-lg bg-primary text-primary-foreground text-xs font-bold">R</span>
+            <span className="font-display text-sm font-semibold">ResumeIQ</span>
+          </Link>
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-6 py-12">
-        <section className="text-center mb-12">
-          <h1 className="text-4xl font-bold tracking-tight">How ResumeIQ works</h1>
-          <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
-            Three steps from upload to a rewritten, ATS-friendly resume.
+      <main className="mx-auto max-w-5xl px-6 py-20">
+        <section className="text-center mb-20 hero-bg -mx-6 px-6 py-16 rounded-3xl">
+          <div className="text-xs uppercase tracking-[0.3em] text-primary/80 mb-4">The playbook</div>
+          <h1 className="font-display text-5xl md:text-6xl font-semibold tracking-tighter">
+            How <span className="text-primary italic font-normal">ResumeIQ</span> works
+          </h1>
+          <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">
+            Three steps from raw resume to a rewrite that clears the bots and wins the interview.
           </p>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-3 mb-16">
+        <section className="grid gap-6 md:grid-cols-3 mb-24">
           {steps.map((s) => (
-            <Card key={s.title} className="p-6">
-              <span className="grid h-10 w-10 place-items-center rounded-lg bg-primary/10 text-primary mb-4">
-                <s.icon className="h-5 w-5" />
-              </span>
-              <h3 className="font-semibold mb-2">{s.title}</h3>
-              <p className="text-sm text-muted-foreground">{s.text}</p>
+            <Card key={s.title} className="elevated-card p-7 rounded-2xl relative overflow-hidden group">
+              <div className="absolute -top-6 -right-4 font-display text-8xl font-bold text-primary/5 group-hover:text-primary/10 transition">
+                {s.n}
+              </div>
+              <div className="relative">
+                <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary/15 text-primary border border-primary/25 mb-5">
+                  <s.icon className="h-5 w-5" />
+                </div>
+                <h3 className="font-display text-xl font-semibold mb-2">{s.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{s.text}</p>
+              </div>
             </Card>
           ))}
         </section>
 
-        <section className="mb-16">
-          <div className="flex items-center gap-2 mb-6">
-            <ShieldCheck className="h-5 w-5 text-primary" />
-            <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
+        <section className="mb-24">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary/15 text-primary">
+              <ShieldCheck className="h-4 w-4" />
+            </div>
+            <h2 className="font-display text-3xl font-semibold tracking-tight">
+              Frequently asked
+            </h2>
           </div>
-          <Card className="p-2 sm:p-6">
+          <Card className="elevated-card rounded-2xl p-2 md:p-4">
             <Accordion type="single" collapsible className="w-full">
               {faqs.map((f, i) => (
-                <AccordionItem key={i} value={`item-${i}`}>
-                  <AccordionTrigger className="text-left">{f.q}</AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground leading-relaxed">
+                <AccordionItem key={i} value={`item-${i}`} className="border-border/60 px-4">
+                  <AccordionTrigger className="text-left font-display text-base md:text-lg py-5 hover:no-underline hover:text-primary transition">
+                    <span className="flex gap-4 items-center">
+                      <span className="font-mono text-xs text-primary/70">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      {f.q}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed pl-10 pb-5 text-base">
                     {f.a}
                   </AccordionContent>
                 </AccordionItem>
@@ -132,9 +160,14 @@ function HowItWorks() {
           </Card>
         </section>
 
-        <section className="text-center">
+        <section className="text-center py-12">
+          <h2 className="font-display text-3xl md:text-4xl font-semibold tracking-tight mb-6">
+            Ready when you are.
+          </h2>
           <Link to="/">
-            <Button size="lg">Try it now</Button>
+            <Button size="lg" className="rounded-full h-12 px-8 lime-glow">
+              Analyze my resume <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           </Link>
         </section>
       </main>

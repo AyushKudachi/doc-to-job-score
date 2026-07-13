@@ -10,7 +10,10 @@ import {
   Sparkles,
   Target,
   TrendingUp,
-  HelpCircle,
+  ArrowRight,
+  Zap,
+  ScanLine,
+  FileCheck2,
 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -62,7 +65,7 @@ function Index() {
     try {
       const text = await extractTextFromFile(f);
       if (!text || text.length < 50) {
-        throw new Error("Could not extract enough text from this file. Try a different file.");
+        throw new Error("Could not extract enough text from this file.");
       }
       setResumeText(text);
       toast.success("Resume text extracted");
@@ -105,147 +108,296 @@ function Index() {
     }
   };
 
+  const scrollToAnalyzer = () => {
+    document.getElementById("analyzer")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30">
-      <header className="border-b border-border/40 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link to="/" className="flex items-center gap-2 font-semibold text-lg tracking-tight">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-              <Sparkles className="h-4 w-4" />
+    <div className="min-h-screen bg-background text-foreground">
+      {/* NAV */}
+      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <Link to="/" className="flex items-center gap-2.5">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground font-bold">
+              R
             </span>
-            ResumeIQ
+            <span className="font-display text-lg font-semibold tracking-tight">
+              Resume<span className="text-primary">IQ</span>
+            </span>
           </Link>
-          <Link
-            to="/how-it-works"
-            className="text-sm text-muted-foreground hover:text-foreground transition"
-          >
-            How it works
-          </Link>
+          <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
+            <a href="#analyzer" className="hover:text-foreground transition">Analyzer</a>
+            <a href="#features" className="hover:text-foreground transition">Features</a>
+            <Link to="/how-it-works" className="hover:text-foreground transition">How it works</Link>
+          </nav>
+          <Button size="sm" onClick={scrollToAnalyzer} className="rounded-full">
+            Analyze <ArrowRight className="ml-1 h-4 w-4" />
+          </Button>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-6 py-12">
-        <section className="text-center mb-12">
-          <Badge variant="secondary" className="mb-4">
-            <Sparkles className="mr-1 h-3 w-3" /> AI-powered ATS analysis
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
-            Get your resume past the bots.
+      {/* HERO */}
+      <section className="hero-bg relative overflow-hidden">
+        <div className="absolute inset-0 grid-lines opacity-40" aria-hidden />
+        <div className="relative mx-auto max-w-7xl px-6 pt-24 pb-32 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+            </span>
+            AI-powered · Instant results
+          </div>
+
+          <h1 className="mt-8 font-display text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.95]">
+            <span className="text-gradient">Beat the bots.</span>
+            <br />
+            <span className="text-foreground">Land the </span>
+            <span className="relative inline-block">
+              <span className="relative z-10 text-primary italic font-normal">interview.</span>
+              <svg
+                className="absolute -bottom-2 left-0 h-3 w-full text-primary/40"
+                viewBox="0 0 200 12"
+                preserveAspectRatio="none"
+              >
+                <path d="M2 8 Q 50 2, 100 6 T 198 4" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" />
+              </svg>
+            </span>
           </h1>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Upload your resume, paste the job description, and get an instant ATS score with
-            missing keywords, skill gaps, and rewrite suggestions.
+
+          <p className="mx-auto mt-8 max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
+            Drop your resume. Get an instant ATS score, missing keywords, skill gaps, and rewrite
+            suggestions — powered by AI that thinks like a recruiter.
           </p>
-        </section>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card className="p-6">
-            <label className="text-sm font-semibold flex items-center gap-2 mb-3">
-              <FileText className="h-4 w-4" /> Your resume
-            </label>
-            <div
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragActive(true);
-              }}
-              onDragLeave={() => setDragActive(false)}
-              onDrop={onDrop}
-              onClick={() => fileInput.current?.click()}
-              className={`cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition ${
-                dragActive
-                  ? "border-primary bg-primary/5"
-                  : "border-border hover:border-primary/50 hover:bg-muted/50"
-              }`}
-            >
-              <input
-                ref={fileInput}
-                type="file"
-                accept=".pdf,.docx,.txt"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) void handleFile(f);
-                }}
-              />
-              {isExtracting ? (
-                <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                  <Loader2 className="h-6 w-6 animate-spin" />
-                  <span className="text-sm">Extracting text…</span>
-                </div>
-              ) : file ? (
-                <div className="flex flex-col items-center gap-2">
-                  <CheckCircle2 className="h-8 w-8 text-primary" />
-                  <div className="font-medium text-sm">{file.name}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {(resumeText.length / 1000).toFixed(1)}k characters extracted · click to
-                    replace
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <Button size="lg" onClick={scrollToAnalyzer} className="rounded-full h-12 px-7 lime-glow text-base">
+              <Sparkles className="mr-2 h-4 w-4" /> Analyze my resume
+            </Button>
+            <Link to="/how-it-works">
+              <Button size="lg" variant="secondary" className="rounded-full h-12 px-7 text-base bg-secondary/50 border border-border">
+                See how it works
+              </Button>
+            </Link>
+          </div>
+
+          <div className="mt-16 flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs uppercase tracking-widest text-muted-foreground/60">
+            <span>PDF & DOCX</span>
+            <span className="text-primary/60">✦</span>
+            <span>Zero storage</span>
+            <span className="text-primary/60">✦</span>
+            <span>Downloadable report</span>
+            <span className="text-primary/60">✦</span>
+            <span>Free forever</span>
+          </div>
+        </div>
+
+        {/* Floating preview mockup */}
+        <div className="relative mx-auto max-w-5xl px-6 pb-12 -mt-8">
+          <div className="animate-float elevated-card rounded-3xl p-1.5">
+            <div className="rounded-[22px] bg-background/60 backdrop-blur p-8 md:p-10">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <div className="flex gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/40" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/40" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/40" />
                   </div>
+                  <span className="ml-2 font-mono">resume_v3.pdf · analyzing</span>
                 </div>
-              ) : (
-                <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                  <Upload className="h-8 w-8" />
-                  <div className="text-sm font-medium text-foreground">
-                    Drop your resume here
-                  </div>
-                  <div className="text-xs">PDF, DOCX or TXT · up to 20MB</div>
+                <Badge variant="secondary" className="rounded-full bg-primary/10 text-primary border-primary/30">
+                  <Zap className="mr-1 h-3 w-3" /> Live
+                </Badge>
+              </div>
+              <div className="grid gap-6 md:grid-cols-[auto_1fr] items-center">
+                <div className="text-center">
+                  <div className="font-display text-7xl font-semibold text-primary">87</div>
+                  <div className="text-xs uppercase tracking-widest text-muted-foreground mt-1">ATS Score</div>
                 </div>
-              )}
+                <div className="space-y-3">
+                  {[
+                    { l: "Keywords match", v: 92 },
+                    { l: "Skills coverage", v: 84 },
+                    { l: "Experience", v: 88 },
+                    { l: "Formatting", v: 90 },
+                  ].map((r) => (
+                    <div key={r.l}>
+                      <div className="flex justify-between text-xs mb-1.5">
+                        <span className="text-muted-foreground">{r.l}</span>
+                        <span className="font-mono text-foreground">{r.v}</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+                        <div className="h-full rounded-full bg-primary" style={{ width: `${r.v}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </Card>
-
-          <Card className="p-6">
-            <label className="text-sm font-semibold flex items-center gap-2 mb-3">
-              <Target className="h-4 w-4" /> Job description{" "}
-              <span className="text-xs font-normal text-muted-foreground">(optional)</span>
-            </label>
-            <Textarea
-              value={jobDescription}
-              onChange={(e) => setJobDescription(e.target.value)}
-              placeholder="Paste the job description to tailor the analysis to a specific role…"
-              className="min-h-[180px] resize-none"
-            />
-            <p className="mt-2 text-xs text-muted-foreground">
-              Adding a job description dramatically improves keyword matching.
-            </p>
-          </Card>
+          </div>
         </div>
+      </section>
 
-        <div className="mt-8 flex justify-center">
-          <Button
-            size="lg"
-            onClick={handleAnalyze}
-            disabled={!resumeText || isAnalyzing || isExtracting}
-            className="min-w-[220px]"
-          >
-            {isAnalyzing ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Analyzing…
-              </>
-            ) : (
-              <>
-                <Sparkles className="mr-2 h-4 w-4" /> Analyze resume
-              </>
-            )}
-          </Button>
+      {/* FEATURES STRIP */}
+      <section id="features" className="border-y border-border/60 bg-secondary/20">
+        <div className="mx-auto max-w-7xl px-6 py-16 grid gap-8 md:grid-cols-3">
+          {[
+            {
+              icon: ScanLine,
+              title: "Parse anything",
+              text: "PDF, DOCX, TXT — extracted directly in your browser. Nothing leaves until you hit analyze.",
+            },
+            {
+              icon: Target,
+              title: "Match the role",
+              text: "Paste any job description. We compare keywords, skills, and experience with recruiter-level rigor.",
+            },
+            {
+              icon: FileCheck2,
+              title: "Actionable rewrites",
+              text: "Not just a score — get concrete, section-by-section suggestions and a downloadable PDF report.",
+            },
+          ].map((f) => (
+            <div key={f.title} className="group">
+              <div className="grid h-12 w-12 place-items-center rounded-xl bg-primary/10 text-primary border border-primary/20 mb-5 group-hover:scale-110 transition">
+                <f.icon className="h-5 w-5" />
+              </div>
+              <h3 className="font-display text-xl font-semibold mb-2">{f.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{f.text}</p>
+            </div>
+          ))}
         </div>
+      </section>
 
-        {analysis && (
-          <section id="results" className="mt-16 space-y-6">
+      {/* ANALYZER */}
+      <section id="analyzer" className="relative py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center mb-14">
+            <div className="text-xs uppercase tracking-[0.3em] text-primary/80 mb-3">Step 01 · Upload & analyze</div>
+            <h2 className="font-display text-4xl md:text-5xl font-semibold tracking-tight">
+              Let's see what recruiters see.
+            </h2>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="elevated-card rounded-2xl p-6">
+              <label className="text-xs uppercase tracking-widest text-muted-foreground font-medium flex items-center gap-2 mb-4">
+                <FileText className="h-3.5 w-3.5" /> Resume file
+              </label>
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragActive(true);
+                }}
+                onDragLeave={() => setDragActive(false)}
+                onDrop={onDrop}
+                onClick={() => fileInput.current?.click()}
+                className={`cursor-pointer rounded-xl border-2 border-dashed p-10 text-center transition-all ${
+                  dragActive
+                    ? "border-primary bg-primary/10 scale-[1.01]"
+                    : "border-border hover:border-primary/50 hover:bg-primary/5"
+                }`}
+              >
+                <input
+                  ref={fileInput}
+                  type="file"
+                  accept=".pdf,.docx,.txt"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) void handleFile(f);
+                  }}
+                />
+                {isExtracting ? (
+                  <div className="flex flex-col items-center gap-3 text-muted-foreground py-4">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <span className="text-sm">Extracting text…</span>
+                  </div>
+                ) : file ? (
+                  <div className="flex flex-col items-center gap-2 py-2">
+                    <div className="grid h-14 w-14 place-items-center rounded-2xl bg-primary/15 text-primary mb-2">
+                      <CheckCircle2 className="h-7 w-7" />
+                    </div>
+                    <div className="font-medium">{file.name}</div>
+                    <div className="text-xs text-muted-foreground font-mono">
+                      {(resumeText.length / 1000).toFixed(1)}k chars · click to replace
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-3 py-2">
+                    <div className="grid h-14 w-14 place-items-center rounded-2xl bg-secondary text-primary mb-2 border border-border">
+                      <Upload className="h-6 w-6" />
+                    </div>
+                    <div className="font-medium">Drop your resume here</div>
+                    <div className="text-xs text-muted-foreground">
+                      PDF · DOCX · TXT — up to 20MB
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="elevated-card rounded-2xl p-6">
+              <label className="text-xs uppercase tracking-widest text-muted-foreground font-medium flex items-center gap-2 mb-4">
+                <Target className="h-3.5 w-3.5" /> Job description
+                <span className="text-[10px] normal-case tracking-normal text-muted-foreground/60">
+                  optional but recommended
+                </span>
+              </label>
+              <Textarea
+                value={jobDescription}
+                onChange={(e) => setJobDescription(e.target.value)}
+                placeholder="Paste the job description here to tailor the analysis…"
+                className="min-h-[220px] resize-none bg-background/50 border-border font-mono text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="mt-10 flex justify-center">
+            <Button
+              size="lg"
+              onClick={handleAnalyze}
+              disabled={!resumeText || isAnalyzing || isExtracting}
+              className="rounded-full h-14 px-10 text-base lime-glow"
+            >
+              {isAnalyzing ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Analyzing your resume…
+                </>
+              ) : (
+                <>
+                  <Sparkles className="mr-2 h-5 w-5" /> Run ATS analysis
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {analysis && (
+        <section id="results" className="relative py-16 border-t border-border/60 bg-secondary/10">
+          <div className="mx-auto max-w-6xl px-6 space-y-6">
+            <div className="text-center mb-8">
+              <div className="text-xs uppercase tracking-[0.3em] text-primary/80 mb-3">Step 02 · Your results</div>
+              <h2 className="font-display text-4xl md:text-5xl font-semibold tracking-tight">
+                Here's the breakdown.
+              </h2>
+            </div>
+
             <ScoreCard analysis={analysis} />
 
             <div className="grid gap-6 md:grid-cols-2">
               <KeywordCard
                 title="Matched keywords"
-                icon={<CheckCircle2 className="h-4 w-4 text-emerald-500" />}
+                icon={<CheckCircle2 className="h-4 w-4" />}
                 keywords={analysis.matchedKeywords}
                 empty="No keywords matched yet."
                 variant="matched"
               />
               <KeywordCard
                 title="Missing keywords"
-                icon={<XCircle className="h-4 w-4 text-red-500" />}
+                icon={<XCircle className="h-4 w-4" />}
                 keywords={analysis.missingKeywords}
-                empty="Great — nothing important missing."
+                empty="Nothing important missing — nice."
                 variant="missing"
               />
             </div>
@@ -253,22 +405,25 @@ function Index() {
             <div className="grid gap-6 md:grid-cols-2">
               <ListCard
                 title="Strengths"
-                icon={<CheckCircle2 className="h-4 w-4 text-emerald-500" />}
+                accent="text-primary"
                 items={analysis.strengths}
               />
               <ListCard
                 title="Improvement suggestions"
-                icon={<TrendingUp className="h-4 w-4 text-primary" />}
+                accent="text-primary"
+                icon={<TrendingUp className="h-4 w-4" />}
                 items={analysis.improvements}
               />
             </div>
 
             {analysis.detectedSkills.length > 0 && (
-              <Card className="p-6">
-                <h3 className="font-semibold mb-3">Detected skills</h3>
+              <Card className="elevated-card p-6 rounded-2xl">
+                <h3 className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
+                  Detected skills
+                </h3>
                 <div className="flex flex-wrap gap-2">
                   {analysis.detectedSkills.map((s) => (
-                    <Badge key={s} variant="secondary">
+                    <Badge key={s} variant="secondary" className="rounded-full px-3 py-1 border border-border bg-secondary/60">
                       {s}
                     </Badge>
                   ))}
@@ -276,28 +431,46 @@ function Index() {
               </Card>
             )}
 
-            <div className="flex justify-center pt-4">
-              <Button size="lg" variant="outline" onClick={() => downloadReport(analysis)}>
-                <Download className="mr-2 h-4 w-4" /> Download PDF report
+            <div className="flex justify-center pt-6">
+              <Button
+                size="lg"
+                onClick={() => downloadReport(analysis)}
+                className="rounded-full h-14 px-8 lime-glow"
+              >
+                <Download className="mr-2 h-5 w-5" /> Download PDF report
               </Button>
             </div>
-          </section>
-        )}
-
-        <section className="mt-20 text-center">
-          <HelpCircle className="mx-auto h-6 w-6 text-muted-foreground mb-3" />
-          <h2 className="text-2xl font-semibold tracking-tight">Curious how it works?</h2>
-          <p className="mt-2 text-muted-foreground">
-            Read our short explainer and FAQ.
-          </p>
-          <Link to="/how-it-works" className="mt-4 inline-block">
-            <Button variant="secondary">Explore how it works</Button>
-          </Link>
+          </div>
         </section>
-      </main>
+      )}
 
-      <footer className="border-t border-border/40 mt-16 py-8 text-center text-sm text-muted-foreground">
-        Built with ResumeIQ · Your resume is analyzed securely and never stored.
+      {/* FAQ CTA */}
+      <section className="py-24">
+        <div className="mx-auto max-w-4xl px-6 text-center">
+          <h2 className="font-display text-4xl md:text-5xl font-semibold tracking-tight">
+            Wondering <span className="text-primary italic font-normal">how</span> this works?
+          </h2>
+          <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
+            Read the 3-step explainer and answers to the questions we get most often.
+          </p>
+          <Link to="/how-it-works" className="mt-8 inline-block">
+            <Button size="lg" variant="secondary" className="rounded-full h-12 px-7 border border-border">
+              Explore how it works <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      <footer className="border-t border-border/60 py-10">
+        <div className="mx-auto max-w-7xl px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <span className="grid h-6 w-6 place-items-center rounded-md bg-primary text-primary-foreground text-xs font-bold">R</span>
+            <span>ResumeIQ · analyzed securely, never stored.</span>
+          </div>
+          <div className="font-mono text-xs text-muted-foreground/60">
+            © {new Date().getFullYear()} — built for job seekers
+          </div>
+        </div>
       </footer>
     </div>
   );
@@ -306,22 +479,41 @@ function Index() {
 function ScoreCard({ analysis }: { analysis: ResumeAnalysis }) {
   const score = analysis.atsScore;
   const tone =
-    score >= 80 ? "text-emerald-500" : score >= 60 ? "text-amber-500" : "text-red-500";
+    score >= 80 ? "text-primary" : score >= 60 ? "text-chart-3" : "text-destructive";
   const label = score >= 80 ? "Excellent" : score >= 60 ? "Good" : score >= 40 ? "Needs work" : "Weak";
+  const circumference = 2 * Math.PI * 70;
+  const offset = circumference - (score / 100) * circumference;
 
   return (
-    <Card className="p-8">
-      <div className="grid gap-8 md:grid-cols-[auto_1fr] md:items-center">
-        <div className="text-center">
-          <div className={`text-6xl font-bold ${tone}`}>{score}</div>
-          <div className="text-sm text-muted-foreground mt-1">out of 100</div>
-          <Badge className="mt-3" variant="secondary">
+    <Card className="elevated-card p-8 md:p-10 rounded-3xl">
+      <div className="grid gap-10 md:grid-cols-[auto_1fr] md:items-center">
+        <div className="relative flex flex-col items-center justify-center">
+          <svg className="w-48 h-48 -rotate-90" viewBox="0 0 160 160">
+            <circle cx="80" cy="80" r="70" strokeWidth="8" className="stroke-secondary" fill="none" />
+            <circle
+              cx="80"
+              cy="80"
+              r="70"
+              strokeWidth="8"
+              className="stroke-primary"
+              fill="none"
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={offset}
+              style={{ transition: "stroke-dashoffset 1s ease-out" }}
+            />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center animate-score">
+            <div className={`font-display text-6xl font-semibold ${tone}`}>{score}</div>
+            <div className="text-xs uppercase tracking-widest text-muted-foreground mt-1">/ 100</div>
+          </div>
+          <Badge className="mt-4 rounded-full bg-primary/15 text-primary border-primary/30 border">
             {label}
           </Badge>
         </div>
-        <div className="space-y-4">
-          <p className="text-sm text-foreground leading-relaxed">{analysis.summary}</p>
-          <div className="grid gap-3 sm:grid-cols-2">
+        <div className="space-y-5">
+          <p className="text-base md:text-lg text-foreground/90 leading-relaxed">{analysis.summary}</p>
+          <div className="grid gap-4 sm:grid-cols-2">
             <ScoreBar label="Keywords" value={analysis.scoreBreakdown.keywords} />
             <ScoreBar label="Skills" value={analysis.scoreBreakdown.skills} />
             <ScoreBar label="Experience" value={analysis.scoreBreakdown.experience} />
@@ -336,11 +528,11 @@ function ScoreCard({ analysis }: { analysis: ResumeAnalysis }) {
 function ScoreBar({ label, value }: { label: string; value: number }) {
   return (
     <div>
-      <div className="flex justify-between text-xs mb-1">
-        <span className="text-muted-foreground">{label}</span>
-        <span className="font-medium">{value}</span>
+      <div className="flex justify-between text-xs mb-1.5">
+        <span className="uppercase tracking-widest text-muted-foreground">{label}</span>
+        <span className="font-mono text-foreground">{value}</span>
       </div>
-      <Progress value={value} className="h-2" />
+      <Progress value={value} className="h-1.5" />
     </div>
   );
 }
@@ -359,20 +551,23 @@ function KeywordCard({
   variant: "matched" | "missing";
 }) {
   return (
-    <Card className="p-6">
-      <h3 className="font-semibold flex items-center gap-2 mb-3">
-        {icon} {title}
+    <Card className="elevated-card rounded-2xl p-6">
+      <h3 className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground mb-4">
+        <span className={variant === "matched" ? "text-primary" : "text-destructive"}>{icon}</span>
+        {title}
       </h3>
       {keywords.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{empty}</p>
+        <p className="text-sm text-muted-foreground italic">{empty}</p>
       ) : (
         <div className="flex flex-wrap gap-2">
           {keywords.map((k) => (
             <Badge
               key={k}
-              variant={variant === "matched" ? "secondary" : "outline"}
+              variant="secondary"
               className={
-                variant === "missing" ? "border-red-500/40 text-red-600 dark:text-red-400" : ""
+                variant === "matched"
+                  ? "rounded-full px-3 py-1 bg-primary/10 text-primary border border-primary/30"
+                  : "rounded-full px-3 py-1 bg-destructive/10 text-destructive border border-destructive/30"
               }
             >
               {k}
@@ -388,21 +583,26 @@ function ListCard({
   title,
   icon,
   items,
+  accent = "text-primary",
 }: {
   title: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   items: string[];
+  accent?: string;
 }) {
   return (
-    <Card className="p-6">
-      <h3 className="font-semibold flex items-center gap-2 mb-3">
-        {icon} {title}
+    <Card className="elevated-card rounded-2xl p-6">
+      <h3 className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground mb-4">
+        {icon && <span className={accent}>{icon}</span>}
+        {title}
       </h3>
-      <ul className="space-y-2">
+      <ul className="space-y-3">
         {items.map((it, i) => (
-          <li key={i} className="text-sm text-foreground/90 flex gap-2">
-            <span className="text-muted-foreground mt-1">•</span>
-            <span>{it}</span>
+          <li key={i} className="flex gap-3 text-sm text-foreground/90">
+            <span className={`font-mono text-xs pt-0.5 ${accent}`}>
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <span className="leading-relaxed">{it}</span>
           </li>
         ))}
       </ul>

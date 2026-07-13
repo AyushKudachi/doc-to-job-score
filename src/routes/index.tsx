@@ -423,6 +423,8 @@ function Index() {
 
             <ScoreCard analysis={analysis} />
 
+            <BreakdownCard analysis={analysis} />
+
             <div className="grid gap-6 md:grid-cols-2">
               <KeywordCard
                 title="Matched keywords"

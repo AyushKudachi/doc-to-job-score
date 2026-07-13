@@ -49,7 +49,6 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [file, setFile] = useState<File | null>(null);
   const [resumeText, setResumeText] = useState("");
-  const [jobDescription, setJobDescription] = useState("");
   const [isExtracting, setIsExtracting] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
@@ -94,7 +93,7 @@ function Index() {
     setIsAnalyzing(true);
     setAnalysis(null);
     try {
-      const result = await analyze({ data: { resumeText, jobDescription } });
+      const result = await analyze({ data: { resumeText } });
       setAnalysis(result);
       toast.success("Analysis complete");
       setTimeout(() => {

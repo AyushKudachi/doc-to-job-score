@@ -296,8 +296,9 @@ function Index() {
 
         {/* Floating preview mockup */}
         <div className="relative mx-auto max-w-5xl px-6 pb-12 -mt-8">
-          <div className="animate-float elevated-card rounded-3xl p-1.5">
+          <div className="animate-float tilt-hover elevated-card rounded-3xl p-1.5">
             <div className="rounded-[22px] bg-background/60 backdrop-blur p-8 md:p-10">
+
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <div className="flex gap-1.5">

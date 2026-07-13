@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Upload,
   FileText,
@@ -15,6 +15,9 @@ import {
   ScanLine,
   FileCheck2,
   Wand2,
+  History,
+  LogIn,
+  LogOut,
 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -26,6 +29,8 @@ import { Badge } from "@/components/ui/badge";
 import { extractTextFromFile } from "@/lib/extract-text";
 import { analyzeResume, type ResumeAnalysis } from "@/lib/analyze-resume.functions";
 import { downloadReport } from "@/lib/report";
+import { saveAnalysis } from "@/lib/history.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({

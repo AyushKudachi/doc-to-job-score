@@ -12,6 +12,9 @@ import {
   TrendingDown,
   Minus,
   Trophy,
+  RotateCw,
+  AlertCircle,
+  CheckCircle2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";

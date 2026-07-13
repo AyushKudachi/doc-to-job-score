@@ -17,13 +17,15 @@ const AnalysisSchema = z.object({
   missingKeywords: z.array(z.string()),
   detectedSkills: z.array(z.string()),
   strengths: z.array(z.string()),
+  weaknesses: z.array(z.string()).default([]),
   improvements: z.array(z.string()),
+  actionPoints: z.array(z.string()).default([]),
   summary: z.string(),
 });
 
 export type ResumeAnalysis = z.infer<typeof AnalysisSchema>;
 
-const SYSTEM_PROMPT = `You are an expert ATS (Applicant Tracking System) analyzer and career coach.
+const SYSTEM_PROMPT = `You are an elite ATS (Applicant Tracking System) analyzer and senior career coach.
 Analyze the resume and return a strict JSON object matching this schema:
 {
   "atsScore": number 0-100 (overall ATS compatibility & general job-market fit),
@@ -31,10 +33,13 @@ Analyze the resume and return a strict JSON object matching this schema:
   "matchedKeywords": string[] (strong industry/role keywords present in the resume),
   "missingKeywords": string[] (commonly expected industry keywords the resume lacks),
   "detectedSkills": string[] (skills detected in the resume),
-  "strengths": string[] (3-6 concise strengths),
-  "improvements": string[] (5-8 concrete, actionable rewrite/structure suggestions),
+  "strengths": string[] (4-6 concise, specific strengths — reference actual resume content),
+  "weaknesses": string[] (4-6 concrete weaknesses or red flags an ATS/recruiter would flag),
+  "improvements": string[] (5-8 concrete rewrite/structure suggestions with the WHY),
+  "actionPoints": string[] (5-7 prioritized next actions the candidate should take THIS WEEK — start each with a strong verb like "Add", "Quantify", "Rewrite", "Remove", "Reorder"),
   "summary": string (2-3 sentence overall assessment)
 }
+Be honest, specific, and actionable. Reference real content from the resume when possible.
 Return ONLY valid JSON. No markdown, no commentary.`;
 
 export const analyzeResume = createServerFn({ method: "POST" })

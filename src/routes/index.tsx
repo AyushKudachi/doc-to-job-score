@@ -164,15 +164,28 @@ function Index() {
           <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
             <a href="#analyzer" className="hover:text-foreground transition">Analyzer</a>
             <Link to="/builder" className="hover:text-foreground transition">AI Builder</Link>
-            <a href="#features" className="hover:text-foreground transition">Features</a>
+            {userEmail && <Link to="/history" className="hover:text-foreground transition">History</Link>}
             <Link to="/how-it-works" className="hover:text-foreground transition">How it works</Link>
           </nav>
           <div className="flex items-center gap-2">
-            <Link to="/builder" className="hidden sm:block">
-              <Button size="sm" variant="secondary" className="rounded-full">
-                <Sparkles className="mr-1 h-3.5 w-3.5" /> Build
-              </Button>
-            </Link>
+            {userEmail ? (
+              <>
+                <Link to="/history" className="hidden sm:block">
+                  <Button size="sm" variant="secondary" className="rounded-full">
+                    <History className="mr-1 h-3.5 w-3.5" /> History
+                  </Button>
+                </Link>
+                <Button size="sm" variant="ghost" onClick={signOut} className="rounded-full" title={userEmail}>
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </>
+            ) : (
+              <Link to="/auth" className="hidden sm:block">
+                <Button size="sm" variant="secondary" className="rounded-full">
+                  <LogIn className="mr-1 h-3.5 w-3.5" /> Sign in
+                </Button>
+              </Link>
+            )}
             <Button size="sm" onClick={scrollToAnalyzer} className="rounded-full">
               Analyze <ArrowRight className="ml-1 h-4 w-4" />
             </Button>

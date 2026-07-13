@@ -52,6 +52,7 @@ interface SlotState {
   extracting: boolean;
   analyzing: boolean;
   analysis: ResumeAnalysis | null;
+  error: string | null;
 }
 
 const initialSlot: SlotState = {
@@ -60,6 +61,7 @@ const initialSlot: SlotState = {
   extracting: false,
   analyzing: false,
   analysis: null,
+  error: null,
 };
 
 function ComparePage() {
@@ -72,7 +74,13 @@ function ComparePage() {
 
   const handleFile = useCallback(
     async (slot: Slot, file: File) => {
-      setSlot(slot, (s) => ({ ...s, file, extracting: true, analysis: null }));
+      setSlot(slot, (s) => ({
+        ...s,
+        file,
+        extracting: true,
+        analysis: null,
+        error: null,
+      }));
       try {
         const text = await extractTextFromFile(file);
         setSlot(slot, (s) => ({ ...s, text, extracting: false }));
@@ -84,30 +92,46 @@ function ComparePage() {
     [],
   );
 
+  const runOne = useCallback(
+    async (slot: Slot, text: string) => {
+      setSlot(slot, (s) => ({ ...s, analyzing: true, analysis: null, error: null }));
+      try {
+        const res = await analyze({ data: { resumeText: text } });
+        setSlot(slot, (s) => ({ ...s, analyzing: false, analysis: res }));
+        return true;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Analysis failed";
+        setSlot(slot, (s) => ({ ...s, analyzing: false, error: msg }));
+        return false;
+      }
+    },
+    [analyze],
+  );
+
   const runCompare = async () => {
     if (!a.text || !b.text) {
       toast.error("Please upload both resumes first");
       return;
     }
-    setA((s) => ({ ...s, analyzing: true, analysis: null }));
-    setB((s) => ({ ...s, analyzing: true, analysis: null }));
-    try {
-      const [resA, resB] = await Promise.all([
-        analyze({ data: { resumeText: a.text } }),
-        analyze({ data: { resumeText: b.text } }),
-      ]);
-      setA((s) => ({ ...s, analyzing: false, analysis: resA }));
-      setB((s) => ({ ...s, analyzing: false, analysis: resB }));
+    const [okA, okB] = await Promise.all([runOne("A", a.text), runOne("B", b.text)]);
+    if (okA && okB) {
       toast.success("Comparison ready");
       setTimeout(() => {
         document.getElementById("compare-results")?.scrollIntoView({ behavior: "smooth" });
       }, 100);
-    } catch (err) {
-      setA((s) => ({ ...s, analyzing: false }));
-      setB((s) => ({ ...s, analyzing: false }));
-      toast.error(err instanceof Error ? err.message : "Analysis failed");
+    } else if (okA || okB) {
+      toast.warning("One resume failed — retry the failed side");
+    } else {
+      toast.error("Both analyses failed");
     }
   };
+
+  const retry = (slot: Slot) => {
+    const text = slot === "A" ? a.text : b.text;
+    if (!text) return;
+    void runOne(slot, text);
+  };
+
 
   const busy = a.extracting || b.extracting || a.analyzing || b.analyzing;
   const ready = Boolean(a.text && b.text);

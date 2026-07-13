@@ -246,8 +246,8 @@ function Index() {
             },
             {
               icon: Target,
-              title: "Match the role",
-              text: "Paste any job description. We compare keywords, skills, and experience with recruiter-level rigor.",
+              title: "Match the market",
+              text: "We compare your resume against industry-standard keywords, skills, and experience expectations with recruiter-level rigor.",
             },
             {
               icon: FileCheck2,

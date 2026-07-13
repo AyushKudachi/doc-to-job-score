@@ -3,7 +3,6 @@ import { z } from "zod";
 
 const InputSchema = z.object({
   resumeText: z.string().min(50, "Resume text is too short"),
-  jobDescription: z.string().optional().default(""),
 });
 
 const AnalysisSchema = z.object({
@@ -27,10 +26,10 @@ export type ResumeAnalysis = z.infer<typeof AnalysisSchema>;
 const SYSTEM_PROMPT = `You are an expert ATS (Applicant Tracking System) analyzer and career coach.
 Analyze the resume and return a strict JSON object matching this schema:
 {
-  "atsScore": number 0-100 (overall ATS compatibility & job fit),
+  "atsScore": number 0-100 (overall ATS compatibility & general job-market fit),
   "scoreBreakdown": { "keywords": 0-100, "formatting": 0-100, "experience": 0-100, "skills": 0-100 },
-  "matchedKeywords": string[] (keywords from the job description present in the resume; empty array if no JD),
-  "missingKeywords": string[] (important keywords from the job description missing from the resume; if no JD, list commonly expected industry keywords the resume lacks),
+  "matchedKeywords": string[] (strong industry/role keywords present in the resume),
+  "missingKeywords": string[] (commonly expected industry keywords the resume lacks),
   "detectedSkills": string[] (skills detected in the resume),
   "strengths": string[] (3-6 concise strengths),
   "improvements": string[] (5-8 concrete, actionable rewrite/structure suggestions),
@@ -44,7 +43,7 @@ export const analyzeResume = createServerFn({ method: "POST" })
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new Error("Missing LOVABLE_API_KEY");
 
-    const userContent = `RESUME:\n"""\n${data.resumeText}\n"""\n\nJOB DESCRIPTION:\n"""\n${data.jobDescription || "(none provided — evaluate as a general resume)"}\n"""`;
+    const userContent = `RESUME:\n"""\n${data.resumeText}\n"""\n\nAnalyze this resume for general ATS compatibility and job-market fit.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

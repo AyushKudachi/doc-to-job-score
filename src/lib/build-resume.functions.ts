@@ -81,8 +81,9 @@ Rules:
 export const buildResume = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => InputSchema.parse(input))
   .handler(async ({ data }): Promise<BuiltResume> => {
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("Missing LOVABLE_API_KEY");
+    const apiKey = process.env.OPENROUTER_API_KEY;
+    if (!apiKey) throw new Error("Missing OPENROUTER_API_KEY");
+    const model = process.env.OPENROUTER_MODEL || "google/gemini-2.5-flash";
 
     const userContent = `Candidate info:
 Full name: ${data.fullName}
@@ -103,14 +104,16 @@ Preferred tone: ${data.tone}
 
 Generate the resume JSON now.`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Lovable-API-Key": apiKey,
+        Authorization: `Bearer ${apiKey}`,
+        "HTTP-Referer": process.env.OPENROUTER_SITE_URL || "https://doc-to-job-score.onrender.com",
+        "X-Title": process.env.OPENROUTER_APP_NAME || "Resume ATS Analyzer",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model,
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           { role: "user", content: userContent },
@@ -122,7 +125,7 @@ Generate the resume JSON now.`;
     if (!response.ok) {
       const text = await response.text();
       if (response.status === 429) throw new Error("Rate limit exceeded. Please try again shortly.");
-      if (response.status === 402) throw new Error("AI credits exhausted. Please add credits in workspace settings.");
+      if (response.status === 402) throw new Error("OpenRouter credits exhausted. Add credits at openrouter.ai/credits.");
       throw new Error(`AI gateway error (${response.status}): ${text.slice(0, 200)}`);
     }
 

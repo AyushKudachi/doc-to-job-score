@@ -43,7 +43,7 @@ placeholders automatically.
 ### Optional
 | Key | Default | Purpose |
 | --- | --- | --- |
-| `OPENROUTER_MODEL` | `google/gemini-2.5-flash` | Any OpenRouter model slug |
+| `OPENROUTER_MODEL` | `anthropic/claude-3-haiku` | Any OpenRouter model slug |
 | `OPENROUTER_SITE_URL` | your Render URL | Sent as `HTTP-Referer` (OpenRouter analytics) |
 | `OPENROUTER_APP_NAME` | `Resume ATS Analyzer` | Sent as `X-Title` |
 | `PORT` | `10000` | Render sets this automatically |

@@ -78,20 +78,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ResumeIQ — AI Resume ATS Analyzer" },
+      { title: "ResumeIQ — AI Resume ATS Score & Optimization" },
       {
         name: "description",
         content:
-          "Upload your resume and get an instant ATS score, missing keywords, skill match, and AI-powered improvement suggestions.",
+          "Upload your resume PDF or DOCX and get an instant ATS score, missing keywords, skill match, and actionable improvement suggestions.",
       },
-      { property: "og:title", content: "ResumeIQ — AI Resume ATS Analyzer" },
+      { property: "og:title", content: "ResumeIQ — AI Resume ATS Score & Optimization" },
       {
         property: "og:description",
         content:
-          "Instant ATS scoring, keyword matching, and rewrite suggestions for your resume.",
+          "Upload your resume PDF or DOCX and get an instant ATS score, missing keywords, skill match, and actionable improvement suggestions.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "ResumeIQ — AI Resume ATS Score & Optimization" },
+      { name: "twitter:description", content: "Upload your resume PDF or DOCX and get an instant ATS score, missing keywords, skill match, and actionable improvement suggestions." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1e078091-083a-4a8c-8a72-d1ecb6e6b138/id-preview-67307f00--98a8eb24-88a4-4cba-91d6-d9b8f4be0920.lovable.app-1783966652867.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1e078091-083a-4a8c-8a72-d1ecb6e6b138/id-preview-67307f00--98a8eb24-88a4-4cba-91d6-d9b8f4be0920.lovable.app-1783966652867.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

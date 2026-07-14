@@ -41,7 +41,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Instant ATS analysis: score, missing keywords, skill gaps, and improvement tips for your resume.",
+          "Upload your resume PDF or DOCX and get an instant ATS score, missing keywords, skill match, and actionable improvement suggestions.",
       },
     ],
   }),

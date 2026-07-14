@@ -83,7 +83,7 @@ export const buildResume = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<BuiltResume> => {
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) throw new Error("Missing OPENROUTER_API_KEY");
-    const model = process.env.OPENROUTER_MODEL || "google/gemini-2.5-flash";
+    const model = process.env.OPENROUTER_MODEL || "anthropic/claude-3-haiku";
 
     const userContent = `Candidate info:
 Full name: ${data.fullName}

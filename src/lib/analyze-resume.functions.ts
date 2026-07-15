@@ -61,6 +61,9 @@ export const analyzeResume = createServerFn({ method: "POST" })
       },
       body: JSON.stringify({
         model,
+        temperature: 0,
+        top_p: 1,
+        seed: 42,
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           { role: "user", content: userContent },

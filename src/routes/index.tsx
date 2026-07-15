@@ -116,6 +116,18 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* TOP CREDIT BANNER */}
+      <div className="relative z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-center gap-2 px-6 py-2 text-xs">
+          <span className="uppercase tracking-[0.3em] text-muted-foreground/60">Crafted by</span>
+          <a href="#" className="group inline-flex items-center gap-2 font-display text-sm">
+            <span className="gradient-pan font-semibold tracking-tight">Ayush.K</span>
+            <svg width="48" height="12" viewBox="0 0 60 14" className="text-primary/70" fill="none">
+              <path d="M2 10 Q 15 2, 30 8 T 58 6" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" className="signature-draw" />
+            </svg>
+          </a>
+        </div>
+      </div>
       {/* NAV */}
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
@@ -354,7 +366,7 @@ function Index() {
                 <input
                   ref={fileInput}
                   type="file"
-                  accept=".pdf,.docx,.txt"
+                  accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
                   className="hidden"
                   onChange={(e) => {
                     const f = e.target.files?.[0];
@@ -551,32 +563,6 @@ function Index() {
             <span>ResumeIQ · analyzed securely, never stored.</span>
           </div>
 
-          <div className="flex flex-col items-center gap-1">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60">
-              Crafted by
-            </span>
-            <a
-              href="#"
-              className="group inline-flex items-center gap-2 font-display text-lg"
-            >
-              <span className="gradient-pan font-semibold tracking-tight">Ayush.K</span>
-              <svg
-                width="60"
-                height="14"
-                viewBox="0 0 60 14"
-                className="text-primary/70"
-                fill="none"
-              >
-                <path
-                  d="M2 10 Q 15 2, 30 8 T 58 6"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                  className="signature-draw"
-                />
-              </svg>
-            </a>
-          </div>
 
           <div className="font-mono text-xs text-muted-foreground/60">
             © {new Date().getFullYear()} — built for job seekers
